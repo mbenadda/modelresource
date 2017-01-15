@@ -1,0 +1,26 @@
+{
+  "name": "modelresource",
+  "version": "0.1.0",
+  "description": "Easy-to-use model interaction methods for the client side. Uses a redux store and exposes rxjs-based methods to consumers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mbenadda/modelresource.git"
+  },
+  "keywords": [
+    "model",
+    "resource",
+    "rxjs",
+    "redux",
+    "api"
+  ],
+  "author": "Mehdi Benadda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mbenadda/modelresource/issues"
+  },
+  "homepage": "https://github.com/mbenadda/modelresource#readme"
+}
