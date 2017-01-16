@@ -1,54 +1,56 @@
 import * as uuid from 'uuid';
 
-interface IActionIdmapCreateLocalWithRemote {
-  type: 'CREATE_LOCAL_UUID_WITH_REMOTE';
-  local: string;
-  remote: string;
-};
-let createLocalWithRemote = (resourceUri: string): IActionIdmapCreateLocalWithRemote => {
-  return {
-    type: 'CREATE_LOCAL_UUID_WITH_REMOTE',
-    local: uuid.v4(),
-    remote: resourceUri
+class ActionIdmapCreateLocalWithRemote {
+  readonly type: 'CREATE_LOCAL_UUID_WITH_REMOTE';
+  readonly local: string;
+  readonly remote: string;
+
+  constructor (localUuid: string, resourceUri: string) {
+    this.type = 'CREATE_LOCAL_UUID_WITH_REMOTE';
+    this.local = localUuid;
+    this.remote = resourceUri;
   };
+};
+let createLocalWithRemote = (resourceUri: string) => {
+  return new ActionIdmapCreateLocalWithRemote(uuid.v4(), resourceUri);
 };
 
 // This action creator uses the same action as CREATE_LOCAL_WITH_REMOTE, only it sources the arguments
 // differently. Since it's the same task for the reducer we can reuse the action type.
-let updateLocalWithRemote = (localUuid: string, resourceUri: string): IActionIdmapCreateLocalWithRemote => {
-  return {
-    type: 'CREATE_LOCAL_UUID_WITH_REMOTE',
-    local: localUuid,
-    remote: resourceUri
-  };
+let updateLocalWithRemote = (localUuid: string, resourceUri: string) => {
+  return new ActionIdmapCreateLocalWithRemote(localUuid, resourceUri);
 };
 
-interface IActionIdmapCreateLocalOnly {
-  type: 'CREATE_LOCAL_ONLY_UUID';
-  local: string;
-};
-let createLocalOnly = (): IActionIdmapCreateLocalOnly => {
-  return {
-    type: 'CREATE_LOCAL_ONLY_UUID',
-    local: uuid.v4()
+class ActionIdmapCreateLocalOnly {
+  readonly type: 'CREATE_LOCAL_ONLY_UUID';
+  readonly local: string;
+
+  constructor () {
+    this.type = 'CREATE_LOCAL_ONLY_UUID';
+    this.local = uuid.v4();
   };
+};
+let createLocalOnly = () => {
+  return new ActionIdmapCreateLocalOnly();
 };
 
-interface IActionIdmapDelete {
-  type: 'DELETE_UUID';
-  local: string;
+class ActionIdmapDelete {
+  readonly type: 'DELETE_UUID';
+  readonly local: string;
+
+  constructor (localUuid: string) {
+    this.type = 'DELETE_UUID';
+    this.local = localUuid;
+  }
 };
-let delete_ = (localUuid: string): IActionIdmapDelete => {
-  return {
-    type: 'DELETE_UUID',
-    local: localUuid
-  };
+let delete_ = (localUuid: string) => {
+  return new ActionIdmapDelete(localUuid);
 };
 
 export {
-  IActionIdmapCreateLocalOnly,
-  IActionIdmapCreateLocalWithRemote,
-  IActionIdmapDelete,
+  ActionIdmapCreateLocalOnly,
+  ActionIdmapCreateLocalWithRemote,
+  ActionIdmapDelete,
 };
 
 export default {

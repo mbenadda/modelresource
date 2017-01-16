@@ -2,266 +2,295 @@ import { IModel } from '../interfaces/IModel';
 import { IResource } from '../interfaces/IResource';
 import idMapActions from './idMap';
 
-interface IActionResourcesDelete {
-  type: 'DELETE_RESOURCE';
-  localUuid: string;
-  modelName: string;
-  resourceUri: string;
-};
-let delete_ = (resource: IResource): IActionResourcesDelete => {
-  return {
-    type: 'DELETE_RESOURCE',
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
-    resourceUri: resource.resource_uri,
+class ActionResourcesDelete {
+  readonly type: 'DELETE_RESOURCE';
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly resourceUri: string;
+
+  constructor (resource: IResource) {
+    this.type = 'DELETE_RESOURCE';
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
+    this.resourceUri = resource.resource_uri;
   };
+};
+let delete_ = (resource: IResource) => {
+  return new ActionResourcesDelete(resource);
 };
 
-interface IActionResourcesFailAction {
-  type: 'FAIL_ACTION_RESOURCE';
-  Constructor: IModel;
-  error: Error;
-  localUuid: string;
-  modelName: string;
-};
-let failAction = (resource: IResource, error: Error): IActionResourcesFailAction => {
-  return {
-    type: 'FAIL_ACTION_RESOURCE',
-    Constructor: resource.constructor,
-    error,
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
+class ActionResourcesFailAction {
+  readonly type: 'FAIL_ACTION_RESOURCE';
+  readonly Constructor: IModel;
+  readonly error: Error;
+  readonly localUuid: string;
+  readonly modelName: string;
+
+  constructor (resource: IResource, error: Error) {
+    this.type = 'FAIL_ACTION_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.error = error;
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
   };
+};
+let failAction = (resource: IResource, error: Error) => {
+  return new ActionResourcesFailAction(resource, error);
 };
 
 // The initial request to get the resource failed
-interface IActionResourcesFailToLoad {
-  type: 'FAIL_TO_LOAD_RESOURCE';
-  Constructor: IModel;
-  error: Error;
-  localUuid: string;
-  modelName: string;
-};
-let failToLoad = (resourceUri: string, error: Error, Constructor: IModel): IActionResourcesFailToLoad => {
-  return {
-    type: 'FAIL_TO_LOAD_RESOURCE',
-    Constructor,
-    error,
-    localUuid: Constructor.getOrCreateLocalUuid(resourceUri),
-    modelName: Constructor.meta.modelName,
+class ActionResourcesFailToLoad {
+  readonly type: 'FAIL_TO_LOAD_RESOURCE';
+  readonly Constructor: IModel;
+  readonly error: Error;
+  readonly localUuid: string;
+  readonly modelName: string;
+
+  constructor (resourceUri: string, error: Error, Constructor: IModel) {
+    this.type = 'FAIL_TO_LOAD_RESOURCE';
+    this.Constructor = Constructor;
+    this.error = error;
+    this.localUuid = Constructor.getOrCreateLocalUuid(resourceUri);
+    this.modelName = Constructor.meta.modelName;
   };
+};
+let failToLoad = (resourceUri: string, error: Error, Constructor: IModel) => {
+  return new ActionResourcesFailToLoad(resourceUri, error, Constructor);
 };
 
-interface IActionResourcesFailToSave {
-  type: 'FAIL_TO_SAVE_RESOURCE';
-  Constructor: IModel;
-  error: Error;
-  localUuid: string;
-  modelName: string;
-};
-let failToSave = (resource: IResource, error: Error): IActionResourcesFailToSave => {
-  return {
-    type: 'FAIL_TO_SAVE_RESOURCE',
-    Constructor: resource.constructor,
-    error,
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
+class ActionResourcesFailToSave {
+  readonly type: 'FAIL_TO_SAVE_RESOURCE';
+  readonly Constructor: IModel;
+  readonly error: Error;
+  readonly localUuid: string;
+  readonly modelName: string;
+
+  constructor (resource: IResource, error: Error) {
+    this.type = 'FAIL_TO_SAVE_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.error = error;
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
   };
+};
+let failToSave = (resource: IResource, error: Error) => {
+  return new ActionResourcesFailToSave(resource, error);
 };
 
 // An update resource failed: revert the update on state
-interface IActionResourcesFailToUpdate {
-  type: 'FAIL_TO_UPDATE_RESOURCE';
-  Constructor: IModel;
-  error: Error;
-  localUuid: string;
-  modelName: string;
-  revertProps: { [propName: string]: any };
-};
-let failToUpdate = (resource: IResource, error: Error, revertProps: { [propName: string]: any }):
-IActionResourcesFailToUpdate => {
-  return {
-    type: 'FAIL_TO_UPDATE_RESOURCE',
-    Constructor: resource.constructor,
-    error,
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
-    revertProps,
+class ActionResourcesFailToUpdate {
+  readonly type: 'FAIL_TO_UPDATE_RESOURCE';
+  readonly Constructor: IModel;
+  readonly error: Error;
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly revertProps: { [propName: string]: any };
+
+  constructor (resource: IResource, error: Error, revertProps: { [propName: string]: any }) {
+    this.type = 'FAIL_TO_UPDATE_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.error = error;
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
+    this.revertProps = revertProps;
   };
+};
+let failToUpdate = (resource: IResource, error: Error, revertProps: { [propName: string]: any }) => {
+  return new ActionResourcesFailToUpdate(resource, error, revertProps);
 };
 
 // We just received a new version for the resource
 // The safe variant is useful when these actions are consumed in the query reducers
-interface IActionResourcesFinishLoadingCommon {
-  type: string;
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-  resource: IResource;
-};
-interface IActionResourcesFinishLoading extends IActionResourcesFinishLoadingCommon {
-  type: 'FINISH_LOADING_RESOURCE';
-};
-interface IActionResourcesFinishLoadingSafe extends IActionResourcesFinishLoadingCommon {
-  type: 'FINISH_SAFE_LOADING_RESOURCE';
-};
-let receive = (resource: IResource, isSafe: boolean): IActionResourcesFinishLoadingCommon => {
-  return {
-    type: isSafe ? 'FINISH_SAFE_LOADING_RESOURCE' : 'FINISH_LOADING_RESOURCE',
-    Constructor: resource.constructor,
-    localUuid: resource.constructor.getOrCreateLocalUuid(resource.resource_uri),
-    modelName: resource.constructor.meta.modelName,
-    resource,
+class ActionResourcesFinishLoading {
+  readonly type: 'FINISH_LOADING_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly resource: IResource;
+
+  constructor (localUuid: string, resource: IResource) {
+    this.type = 'FINISH_LOADING_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.localUuid = localUuid;
+    this.modelName = resource.constructor.meta.modelName;
+    this.resource = resource;
   };
+};
+class ActionResourcesFinishLoadingSafe {
+  readonly type: 'FINISH_SAFE_LOADING_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly resource: IResource;
+
+  constructor (localUuid: string, resource: IResource) {
+    this.type = 'FINISH_SAFE_LOADING_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.localUuid = localUuid;
+    this.modelName = resource.constructor.meta.modelName;
+    this.resource = resource;
+  };
+};
+let receive = (resource: IResource, isSafe?: boolean) => {
+  let localUuid = resource.constructor.getOrCreateLocalUuid(resource.resource_uri);
+  return isSafe ?
+    new ActionResourcesFinishLoadingSafe(localUuid, resource) :
+    new ActionResourcesFinishLoading(localUuid, resource);
 };
 
 // Reuse the FINISH_LOADING_RESOURCE action, but fill its props differently
-let finishSaving = (localUuid: string, resource: IResource): IActionResourcesFinishLoading => {
+let finishSaving = (localUuid: string, resource: IResource) => {
   resource.constructor.store.dispatch(idMapActions.updateLocalWithRemote(localUuid, resource.resource_uri));
-  return {
-    type: 'FINISH_LOADING_RESOURCE',
-    Constructor: resource.constructor,
-    localUuid,
-    modelName: resource.constructor.meta.modelName,
-    resource,
-  };
+  return new ActionResourcesFinishLoading(localUuid, resource);
 };
 
-interface IActionResourcesInitialize {
-  type: 'INITIALIZE_RESOURCE';
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-  resource: IResource;
+class ActionResourcesInitialize {
+  readonly type: 'INITIALIZE_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly resource: IResource;
+
+  constructor (localUuid: string, resource: IResource) {
+    this.type = 'INITIALIZE_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.localUuid = localUuid;
+    this.modelName = resource.constructor.meta.modelName;
+    this.resource = resource;
+  };
 };
-let initialize = (resource: IResource): IActionResourcesInitialize => {
+let initialize = (resource: IResource) => {
   let dependentAction = idMapActions.createLocalOnly();
   resource.constructor.store.dispatch(dependentAction);
-
-  return {
-    type: 'INITIALIZE_RESOURCE',
-    Constructor: resource.constructor,
-    localUuid: dependentAction.local,
-    modelName: resource.constructor.meta.modelName,
-    resource,
-  };
+  return new ActionResourcesInitialize(dependentAction.local, resource);
 };
 
-interface IActionResourcesInvalidate {
-  type: 'INVALIDATE_RESOURCE';
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-};
-let invalidate = (resource: IResource): IActionResourcesInvalidate => {
-  return {
-    type: 'INVALIDATE_RESOURCE',
-    Constructor: resource.constructor,
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
+class ActionResourcesInvalidate {
+  readonly type: 'INVALIDATE_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+
+  constructor (resource: IResource) {
+    this.type = 'INVALIDATE_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
   };
+};
+let invalidate = (resource: IResource) => {
+  return new ActionResourcesInvalidate(resource);
 };
 
-interface IActionResourcesStartAction {
-  type: 'START_ACTION_RESOURCE';
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-};
-let startAction = (resource: IResource): IActionResourcesStartAction => {
-  return {
-    type: 'START_ACTION_RESOURCE',
-    Constructor: resource.constructor,
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
+class ActionResourcesStartAction {
+  readonly type: 'START_ACTION_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+
+  constructor (resource: IResource) {
+    this.type = 'START_ACTION_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
   };
+};
+let startAction = (resource: IResource) => {
+  return new ActionResourcesStartAction(resource);
 };
 
 // We just dispatched a request to get the resource
-interface IActionResourcesStartLoading {
-  type: 'START_LOADING_RESOURCE';
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-  resourceUri: string;
-};
-let request = (resourceUri: string, Constructor: IModel): IActionResourcesStartLoading => {
-  return {
-    type: 'START_LOADING_RESOURCE',
-    Constructor,
-    localUuid: Constructor.getOrCreateLocalUuid(resourceUri),
-    modelName: Constructor.meta.modelName,
-    resourceUri,
+class ActionResourcesStartLoading {
+  readonly type: 'START_LOADING_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly resourceUri: string;
+
+  constructor (resourceUri: string, Constructor: IModel) {
+    this.type = 'START_LOADING_RESOURCE';
+    this.Constructor = Constructor;
+    this.localUuid = Constructor.getOrCreateLocalUuid(resourceUri);
+    this.modelName = Constructor.meta.modelName;
+    this.resourceUri = resourceUri;
   };
+};
+let request = (resourceUri: string, Constructor: IModel) => {
+  return new ActionResourcesStartLoading(resourceUri, Constructor);
 };
 
 // We're starting to save a new resource to the server: it must already exist in our internal store
-interface IActionResourcesStartSaving {
-  type: 'START_SAVING_RESOURCE';
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-}
-let startToSave = (resource: IResource): IActionResourcesStartSaving => {
-  return {
-    type: 'START_SAVING_RESOURCE',
-    Constructor: resource.constructor,
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
+class ActionResourcesStartSaving {
+  readonly type: 'START_SAVING_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+
+  constructor (resource: IResource) {
+    this.type = 'START_SAVING_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
   };
+};
+let startToSave = (resource: IResource) => {
+  return new ActionResourcesStartSaving(resource);
 };
 
 // Start updating the resource: update the state with the new props
-interface IActionResourcesStartUpdating {
-  type: 'START_UPDATING_RESOURCE';
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-  props: { [propName: string]: any };
-};
-let update = (resource: IResource, props: { [propName: string]: any }): IActionResourcesStartUpdating => {
-  return {
-    type: 'START_UPDATING_RESOURCE',
-    Constructor: resource.constructor,
-    localUuid: resource.constructor.getOrCreateLocalUuid(resource.resource_uri),
-    modelName: resource.constructor.meta.modelName,
-    props,
+class ActionResourcesStartUpdating {
+  readonly type: 'START_UPDATING_RESOURCE';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly props: { [propName: string]: any };
+
+  constructor (resource: IResource, props: { [propName: string]: any }) {
+    this.type = 'START_UPDATING_RESOURCE';
+    this.Constructor = resource.constructor;
+    this.localUuid = resource.constructor.getOrCreateLocalUuid(resource.resource_uri);
+    this.modelName = resource.constructor.meta.modelName;
+    this.props = props;
   };
+};
+let update = (resource: IResource, props: { [propName: string]: any }) => {
+  return new ActionResourcesStartUpdating(resource, props);
 };
 
-interface IActionResourcesUpdateLocally {
-  type: 'UPDATE_RESOURCE_LOCALLY';
-  Constructor: IModel;
-  localUuid: string;
-  modelName: string;
-  props: { [propName: string]: any };
-};
-let updateLocally = (resource: IResource, props: { [propName: string]: any }): IActionResourcesUpdateLocally => {
-  return {
-    type: 'UPDATE_RESOURCE_LOCALLY',
-    Constructor: resource.constructor,
-    localUuid: resource.__local_uuid,
-    modelName: resource.constructor.meta.modelName,
-    props,
+class ActionResourcesUpdateLocally {
+  readonly type: 'UPDATE_RESOURCE_LOCALLY';
+  readonly Constructor: IModel;
+  readonly localUuid: string;
+  readonly modelName: string;
+  readonly props: { [propName: string]: any };
+
+  constructor (resource: IResource, props: { [propName: string]: any }) {
+    this.type = 'UPDATE_RESOURCE_LOCALLY';
+    this.Constructor = resource.constructor;
+    this.localUuid = resource.__local_uuid;
+    this.modelName = resource.constructor.meta.modelName;
+    this.props = props;
   };
+};
+let updateLocally = (resource: IResource, props: { [propName: string]: any }) => {
+  return new ActionResourcesUpdateLocally(resource, props);
 };
 
 export {
-  IActionResourcesDelete,
-  IActionResourcesFailAction,
-  IActionResourcesFailToLoad,
-  IActionResourcesFailToSave,
-  IActionResourcesFailToUpdate,
-  IActionResourcesFinishLoading,
-  IActionResourcesFinishLoadingCommon,
-  IActionResourcesFinishLoadingSafe,
-  IActionResourcesInitialize,
-  IActionResourcesInvalidate,
-  IActionResourcesStartAction,
-  IActionResourcesStartLoading,
-  IActionResourcesStartSaving,
-  IActionResourcesStartUpdating,
-  IActionResourcesUpdateLocally,
+  ActionResourcesDelete,
+  ActionResourcesFailAction,
+  ActionResourcesFailToLoad,
+  ActionResourcesFailToSave,
+  ActionResourcesFailToUpdate,
+  ActionResourcesFinishLoading,
+  ActionResourcesFinishLoadingSafe,
+  ActionResourcesInitialize,
+  ActionResourcesInvalidate,
+  ActionResourcesStartAction,
+  ActionResourcesStartLoading,
+  ActionResourcesStartSaving,
+  ActionResourcesStartUpdating,
+  ActionResourcesUpdateLocally,
 };
 
 export default {

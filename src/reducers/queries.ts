@@ -1,14 +1,14 @@
 import {
-  IActionQueriesFailToLoad,
-  IActionQueriesInvalidateByQuery,
-  IActionQueriesInvalidateByResource,
-  IActionQueriesPushElement,
-  IActionQueriesReceive,
-  IActionQueriesStartLoading,
+  ActionQueriesFailToLoad,
+  ActionQueriesInvalidateByQuery,
+  ActionQueriesInvalidateByResource,
+  ActionQueriesPushElement,
+  ActionQueriesReceive,
+  ActionQueriesStartLoading,
 } from '../actionCreators/queries';
 import {
-  IActionResourcesDelete,
-  IActionResourcesFinishLoading,
+  ActionResourcesDelete,
+  ActionResourcesFinishLoading,
 } from '../actionCreators/resources';
 import { IReduxAction } from '../interfaces/IReduxAction';
 import { IReduxStateQueries } from '../interfaces/IReduxState';
@@ -36,8 +36,8 @@ export default (state: IReduxStateQueries, action: IReduxAction) => {
  * the triage to work using action.modelName. While those types are the ones with which queriesForModelReducer
  * interacts, other actions could go through and just fall to the default case, returning an unchanged state.
 */
-function isRelevantAction (action: IReduxAction): action is IActionQueriesFailToLoad |
-  IActionQueriesInvalidateByQuery | IActionQueriesInvalidateByResource | IActionQueriesPushElement |
-  IActionQueriesReceive | IActionQueriesStartLoading | IActionResourcesDelete | IActionResourcesFinishLoading { 
+function isRelevantAction (action: IReduxAction): action is ActionQueriesFailToLoad |
+  ActionQueriesInvalidateByQuery | ActionQueriesInvalidateByResource | ActionQueriesPushElement |
+  ActionQueriesReceive | ActionQueriesStartLoading | ActionResourcesDelete | ActionResourcesFinishLoading { 
   return action.hasOwnProperty('modelName');
 }

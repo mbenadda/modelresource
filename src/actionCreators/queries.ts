@@ -2,108 +2,118 @@ import { IResource } from '../interfaces/IResource';
 import { IQueryParams } from '../interfaces/IQueryParams';
 import omitIrrelevantParams from '../utils/omitIrrelevantParams';
 
-interface IActionQueriesFailToLoad {
-  type: 'FAIL_TO_LOAD_QUERY';
-  modelName: string;
-  query: IQueryParams;
-};
-let failToLoad = (modelName: string, query: IQueryParams): IActionQueriesFailToLoad => {
-  return {
-    type: 'FAIL_TO_LOAD_QUERY',
-    modelName,
-    query: omitIrrelevantParams(query),
+class ActionQueriesFailToLoad {
+  readonly type: 'FAIL_TO_LOAD_QUERY';
+  readonly modelName: string;
+  readonly query: IQueryParams;
+
+  constructor (modelName: string, query: IQueryParams) {
+    this.type = 'FAIL_TO_LOAD_QUERY';
+    this.modelName = modelName;
+    this.query = omitIrrelevantParams(query);
   };
 };
-
-interface IActionQueriesInvalidateByQuery {
-  type: 'INVALIDATE_QUERY_BY_QUERY';
-  modelName: string;
-  query: IQueryParams;
+let failToLoad = (modelName: string, query: IQueryParams) => {
+  return new ActionQueriesFailToLoad(modelName, query);
 };
-let invalidateByQuery = (modelName: string, query: IQueryParams): IActionQueriesInvalidateByQuery => {
-  return {
-    type: 'INVALIDATE_QUERY_BY_QUERY',
-    modelName,
-    query: omitIrrelevantParams(query),
+
+class ActionQueriesInvalidateByQuery {
+  readonly type: 'INVALIDATE_QUERY_BY_QUERY';
+  readonly modelName: string;
+  readonly query: IQueryParams;
+
+  constructor (modelName: string, query: IQueryParams) {
+    this.type = 'INVALIDATE_QUERY_BY_QUERY';
+    this.modelName = modelName;
+    this.query = omitIrrelevantParams(query);
   };
 };
-
-interface IActionQueriesInvalidateByResource {
-  type: 'INVALIDATE_QUERY_BY_RESOURCE';
-  modelName: string;
+let invalidateByQuery = (modelName: string, query: IQueryParams) => {
+  return new ActionQueriesInvalidateByQuery(modelName, query);
 };
-let invalidateByResource = (modelName: string): IActionQueriesInvalidateByResource => {
-  return {
-    type: 'INVALIDATE_QUERY_BY_RESOURCE',
-    modelName,
+
+class ActionQueriesInvalidateByResource {
+  readonly type: 'INVALIDATE_QUERY_BY_RESOURCE';
+  readonly modelName: string;
+
+  constructor (modelName: string) {
+    this.type = 'INVALIDATE_QUERY_BY_RESOURCE';
+    this.modelName = modelName;
   };
 };
-
-interface IActionQueriesPushElement {
-  type: 'PUSH_ELEMENT_INTO_QUERY';
-  element: IResource;
-  modelName: string;
-  query: IQueryParams;
+let invalidateByResource = (modelName: string) => {
+  return new ActionQueriesInvalidateByResource(modelName);
 };
-let pushIntoQuery = (modelName: string, query: IQueryParams, element: IResource): IActionQueriesPushElement => {
-  return {
-    type: 'PUSH_ELEMENT_INTO_QUERY',
-    element,
-    modelName,
-    query,
+
+class ActionQueriesPushElement {
+  readonly type: 'PUSH_ELEMENT_INTO_QUERY';
+  readonly element: IResource;
+  readonly modelName: string;
+  readonly query: IQueryParams;
+
+  constructor (modelName: string, query: IQueryParams, element: IResource) {
+    this.type = 'PUSH_ELEMENT_INTO_QUERY';
+    this.element = element;
+    this.modelName = modelName;
+    this.query = query;
   };
 };
+let pushIntoQuery = (modelName: string, query: IQueryParams, element: IResource) => {
+  return new ActionQueriesPushElement(modelName, query, element);
+};
 
-interface IActionQueriesReceive {
-  type: 'RECEIVE_QUERY';
+type incomingQuery = {
   list: Array<string>;
   meta: {
     offset: number;
     total_count: number;
   };
-  modelName: string;
   query: IQueryParams;
 };
-let receive = (
-  modelName: string,
-  data: {
-    list: Array<string>,
-    meta: {
-      offset: number;
-      total_count: number;
-    },
-    query: IQueryParams
-  }
-): IActionQueriesReceive => {
-  return {
-    type: 'RECEIVE_QUERY',
-    list: data.list,
-    meta: data.meta,
-    modelName,
-    query: omitIrrelevantParams(data.query),
+class ActionQueriesReceive {
+  readonly type: 'RECEIVE_QUERY';
+  readonly list: Array<string>;
+  readonly meta: {
+    readonly offset: number;
+    readonly total_count: number;
   };
+  readonly modelName: string;
+  readonly query: IQueryParams;
+
+  constructor (modelName: string, data: incomingQuery) {
+    this.type = 'RECEIVE_QUERY';
+    this.list = data.list;
+    this.meta = data.meta;
+    this.modelName = modelName;
+    this.query = omitIrrelevantParams(data.query);
+  };
+};
+let receive = (modelName: string, data: incomingQuery) => {
+  return new ActionQueriesReceive(modelName, data);
 };
 
-interface IActionQueriesStartLoading {
-  type: 'START_LOADING_QUERY',
-  modelName: string;
-  query: IQueryParams;
-};
-let start = (modelName: string, query: IQueryParams): IActionQueriesStartLoading => {
-  return {
-    type: 'START_LOADING_QUERY',
-    modelName,
-    query: omitIrrelevantParams(query),
+class ActionQueriesStartLoading {
+  readonly type: 'START_LOADING_QUERY';
+  readonly modelName: string;
+  readonly query: IQueryParams;
+
+  constructor (modelName: string, query: IQueryParams) {
+    this.type = 'START_LOADING_QUERY';
+    this.modelName = modelName;
+    this.query = omitIrrelevantParams(query);
   };
+};
+let start = (modelName: string, query: IQueryParams) => {
+  return new ActionQueriesStartLoading(modelName, query);
 }
 
 export {
-  IActionQueriesFailToLoad,
-  IActionQueriesInvalidateByQuery,
-  IActionQueriesInvalidateByResource,
-  IActionQueriesPushElement,
-  IActionQueriesReceive,
-  IActionQueriesStartLoading,
+  ActionQueriesFailToLoad,
+  ActionQueriesInvalidateByQuery,
+  ActionQueriesInvalidateByResource,
+  ActionQueriesPushElement,
+  ActionQueriesReceive,
+  ActionQueriesStartLoading,
 };
 
 export default {
