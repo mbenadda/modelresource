@@ -1,6 +1,6 @@
 import { IReduxAction } from '../interfaces/IReduxAction';
 import { IReduxStateIdmap } from '../interfaces/IReduxState';
-import omit from 'lodash/omit';
+import * as _ from 'lodash';
 
 export default (state: IReduxStateIdmap, action: IReduxAction): IReduxStateIdmap => {
   if (typeof state === 'undefined') {
@@ -31,8 +31,8 @@ export default (state: IReduxStateIdmap, action: IReduxAction): IReduxStateIdmap
 
     case 'DELETE_UUID':
       return {
-        internalId: omit(state.internalId, state.externalId[action.local] || '') as { [internalId: string]: null | string | undefined },
-        externalId: omit(state.externalId, action.local) as { [externalId: string]: null | string | undefined }
+        internalId: _.omit(state.internalId, state.externalId[action.local] || '') as { [internalId: string]: null | string | undefined },
+        externalId: _.omit(state.externalId, action.local) as { [externalId: string]: null | string | undefined }
       };
 
     default:

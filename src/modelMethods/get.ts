@@ -2,7 +2,7 @@ import { IModel } from '../interfaces/IModel';
 import { IQueryParams } from '../interfaces/IQueryParams';
 import { IReduxState } from '../interfaces/IReduxState';
 import getResourceByRemote from '../utils/getResourceByRemote';
-import omit from 'lodash/omit';
+import * as _ from 'lodash';
 import resourcesActions from '../actionCreators/resources';
 
 import { Observable } from 'rxjs/Observable';
@@ -36,7 +36,7 @@ export default function get (this: IModel, params: IQueryParams) {
 
     this.store.dispatch(resourcesActions.request(resourceUri, this));
 
-    get$ = this.connectors.get(resourceUrl, omit(params, this.meta.idName) as IQueryParams)
+    get$ = this.connectors.get(resourceUrl, _.omit(params, this.meta.idName) as IQueryParams)
       .do((rawResource: { [propName: string]: any }) => {
         this.store.dispatch(resourcesActions.receive(new this(rawResource), true));
       }, (error: Error) => {

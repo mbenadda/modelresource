@@ -1,6 +1,6 @@
 import { IReduxAction } from '../interfaces/IReduxAction';
 import { IReduxStateResources } from '../interfaces/IReduxState';
-import omit from 'lodash/omit';
+import * as _ from 'lodash';
 
 export default (state: IReduxStateResources, action: IReduxAction): IReduxStateResources => {
   var newEntity;
@@ -11,7 +11,7 @@ export default (state: IReduxStateResources, action: IReduxAction): IReduxStateR
 
   switch (action.type) {
     case 'DELETE_RESOURCE':
-      return omit(state, action.localUuid) as IReduxStateResources;
+      return _.omit(state, action.localUuid) as IReduxStateResources;
 
     case 'FAIL_ACTION_RESOURCE':
     case 'FAIL_TO_LOAD_RESOURCE':
