@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "alwaysStrict": true,
+    "module": "system",
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strictNullChecks": true,
+    "target": "es6"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "**/*.spec.js",
+    "**/*.spec.ts"
+  ]
+}
