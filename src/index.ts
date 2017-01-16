@@ -6,6 +6,7 @@ import { IResource } from './interfaces/IResource';
 
 import get from './modelMethods/get';
 import getLocalUuid from './utils/getLocalUuid';
+import getOrCreate from './modelMethods/getOrCreate';
 import idMapActions from './actionCreators/idMap';
 
 function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
@@ -32,6 +33,7 @@ function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
     this.connectors = connectors;
 
     this.get = get;
+    this.getOrCreate = getOrCreate;
 
     this.getOrCreateLocalUuid = (resourceUri: string) => {
       let existingUuid = getLocalUuid(this.store.getValue(), resourceUri);
