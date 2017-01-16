@@ -1,6 +1,7 @@
 import { IConnectors } from './IConnectors';
 import { IReduxStore } from './IReduxStore';
 import { IResource } from './IResource';
+import { Observable } from 'rxjs/Observable';
 
 export interface IModel {
   new(props: { [propName: string]: any }): IResource;
@@ -17,5 +18,6 @@ export interface IModel {
   };
   query: Function;
   schema: Function;
+  schemaCache?: Observable<any>; 
   store: IReduxStore;
 };
