@@ -4,6 +4,7 @@ import { IReduxState } from './interfaces/IReduxState';
 import { IReduxStore } from './interfaces/IReduxStore';
 import { IResource } from './interfaces/IResource';
 
+import action from './resourceMethods/action';
 import get from './modelMethods/get';
 import getLocalUuid from './utils/getLocalUuid';
 import getOrCreate from './modelMethods/getOrCreate';
@@ -47,6 +48,8 @@ function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
       }
     };
   }
+
+  ModelResource.prototype = { action };
 
   return ModelResource;
 }
