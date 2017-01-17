@@ -10,6 +10,7 @@ import get from './modelMethods/get';
 import getLocalUuid from './utils/getLocalUuid';
 import getOrCreate from './modelMethods/getOrCreate';
 import idMapActions from './actionCreators/idMap';
+import reload from './resourceMethods/reload';
 import schema from './modelMethods/schema';
 
 function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
@@ -50,7 +51,7 @@ function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
     };
   }
 
-  ModelResource.prototype = { action, delete: delete_ };
+  ModelResource.prototype = { action, delete: delete_, reload };
 
   return ModelResource;
 }
