@@ -10,6 +10,7 @@ import get from './modelMethods/get';
 import getLocalUuid from './utils/getLocalUuid';
 import getOrCreate from './modelMethods/getOrCreate';
 import idMapActions from './actionCreators/idMap';
+import query from './modelMethods/query';
 import reload from './resourceMethods/reload';
 import save from './resourceMethods/save';
 import schema from './modelMethods/schema';
@@ -40,6 +41,7 @@ function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
 
     this.get = get;
     this.getOrCreate = getOrCreate;
+    this.query = query;
     this.schema = schema;
 
     this.getOrCreateLocalUuid = (resourceUri: string) => {

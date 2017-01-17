@@ -1,3 +1,7 @@
 export interface IQueryParams {
-  [propName: string]: null | number | string | undefined;
+  cleanLoad?: boolean;
+  forceRequest?: boolean;
+  limit?: number;
+  offset?: number;
+  [propName: string]: boolean | null | number | string | undefined;
 };
