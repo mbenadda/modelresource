@@ -11,6 +11,7 @@ import getLocalUuid from './utils/getLocalUuid';
 import getOrCreate from './modelMethods/getOrCreate';
 import idMapActions from './actionCreators/idMap';
 import reload from './resourceMethods/reload';
+import save from './resourceMethods/save';
 import schema from './modelMethods/schema';
 
 function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
@@ -51,7 +52,7 @@ function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
     };
   }
 
-  ModelResource.prototype = { action, delete: delete_, reload };
+  ModelResource.prototype = { action, delete: delete_, reload, save };
 
   return ModelResource;
 }
