@@ -5,6 +5,7 @@ import { IReduxStore } from './interfaces/IReduxStore';
 import { IResource } from './interfaces/IResource';
 
 import action from './resourceMethods/action';
+import delete_ from './resourceMethods/delete';
 import get from './modelMethods/get';
 import getLocalUuid from './utils/getLocalUuid';
 import getOrCreate from './modelMethods/getOrCreate';
@@ -49,7 +50,7 @@ function modelResourceFactory ({ baseUrl, connectors, makeUri, store }: {
     };
   }
 
-  ModelResource.prototype = { action };
+  ModelResource.prototype = { action, delete: delete_ };
 
   return ModelResource;
 }
