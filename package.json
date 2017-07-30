@@ -4,6 +4,7 @@
   "description": "Easy-to-use model interaction methods for the client side. Uses a redux store and exposes rxjs-based methods to consumers.",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -31,6 +32,11 @@
   "devDependencies": {
     "@types/lodash": "^4.14.50",
     "@types/uuid": "^2.0.29",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "clean-webpack-plugin": "^0.1.16",
+    "ts-loader": "^2.3.2",
     "typescript": "^2.1.5",
     "webpack": "^3.4.1"
   }

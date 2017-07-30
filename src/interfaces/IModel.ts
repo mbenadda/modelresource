@@ -1,5 +1,5 @@
 import { IConnectors } from './IConnectors';
-import { IReduxStore } from './IReduxStore';
+import { IReduxLocalStore } from './IReduxStore';
 import { IResource } from './IResource';
 import { Observable } from 'rxjs/Observable';
 
@@ -19,5 +19,5 @@ export interface IModel {
   query: Function;
   schema: Function;
   schemaCache?: Observable<any>; 
-  store: IReduxStore;
+  store: IReduxLocalStore;
 };

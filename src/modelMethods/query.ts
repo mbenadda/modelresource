@@ -4,6 +4,7 @@ import { IQueryParams } from '../interfaces/IQueryParams';
 import omitIrrelevantParams from '../utils/omitIrrelevantParams';
 import queriesActions from '../actionCreators/queries';
 import resourcesActions from '../actionCreators/resources';
+import * as _ from 'lodash';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -71,7 +72,7 @@ export default function query (this: IModel, params: IQueryParams) {
         if (query && query.list) {
           return {
             ...query,
-            list: new Array(params.limit || 10)
+            list: _.chain(new Array(params.limit || 10))
               // Get all the possible indexes the caller asked for
               .map((item, index, array) => { return (params.offset || 0) + index; })
               // Replace the indexes by the relevant listing resource uri from the stored query
@@ -90,7 +91,8 @@ export default function query (this: IModel, params: IQueryParams) {
                 }
               })
               // Drop undefined items
-              .filter((item) => { return !!item; }),
+              .filter((item) => { return !!item; })
+              .value(),
           };
         }
         else { return query; }
@@ -105,10 +107,11 @@ function getMissingIndexes (query: IQuery, params: IQueryParams) {
   offset = Number.isInteger(params.offset || NaN) && params.offset || 0;
   limit = Math.min(
     Number.isInteger(params.limit || NaN) && params.limit || 10,
-    Number.isInteger(query.total_count || NaN) && query.total_count || 999
+    Number.isInteger(query && query.total_count || NaN) && query.total_count || 999
   );
-  // Create an array with as many items as the needed entities in the query
-  return new Array(limit)
+  // Create an array with as many items as the needed entities in the query - use lodash to iterate over it as
+  // Array.prototype.map does not iterate over an array with a length but nothing in it
+  return _.chain(new Array(limit))
     // Start from the offset and list the indexes of the needed items in the query
     .map((item, indexInThis) => { return offset + indexInThis; })
     // Drop the indexes we already have in our query list cache
@@ -117,5 +120,6 @@ function getMissingIndexes (query: IQuery, params: IQueryParams) {
         (!(query &&
            query.list &&
            query.list[indexInQuery]));
-    });
+    })
+    .value();
 }
